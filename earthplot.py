@@ -14,7 +14,7 @@ Examples
 """
     _name_ = "earthplot"
     _version_ = "0.1.0"
-    _install_requires = ["ncplot", "cartopy"]
+    _install_requires_ = ["ncplot", "cartopy"]
 
     def __init__(self, parent):
 
@@ -62,17 +62,24 @@ Examples
 
         if targs.cyclic_point:
             
-            data = targs.cyclic_point.vargs[0]
-            coord = targs.cyclic_point.kwargs.get("coord", None)
+            args = []
 
-            import pdb; pdb.set_trace()
+            data = targs.cyclic_point.vargs[0] + "[:]"
+            args.append(data)
+
+            coord = targs.cyclic_point.kwargs.get("coord", None)
+            axis = targs.cyclic_point.kwargs.get("axis", "-1")
+
+
             if coord:
-                exec("%s, %s = cartopy.util.add_cyclic_point(%s)" % (data, coord, str(targs.cyclic_point)), self._env)
+                coord += "[:]"
+                args.append("coord=" + coord)
+                args.append("axis=" + axis)
+                exec("%s, %s = cartopy.util.add_cyclic_point(%s)" % (data, coord, ",".join(args)), self._env)
 
             else:
-                exec("%s = cartopy.util.add_cyclic_point(%s)" % (data, str(targs.cyclic_point)), self._env)
+                args.append("axis=" + axis)
+                exec("%s = cartopy.util.add_cyclic_point(%s)" % (data, ",".join(args)), self._env)
 
-
-        import pdb; pdb.set_trace()
 #ax = plt.axes(projection=ccrs.PlateCarree())
 #ax.coastlines()
