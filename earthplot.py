@@ -22,9 +22,14 @@ Examples
 
         self.add_option_argument("--projection", default=default_projection, param_parse=True,
             help="set map projection (default=%s)" % default_projection)
-        self.add_option_argument("--coastlines", action="store_true", help="add coastlines in a map")
+
+        self.add_option_argument("--coastlines", nargs="?", param_parse=True, const="", help="add coastlines to the map")
+        self.add_option_argument("--stock-image", nargs="?", param_parse=True, const="", help="add an underlay image to the map")
+        self.add_option_argument("--colorbar", nargs="?", param_parse=True, const="", help="add a color bar to the map")
+        #self.add_option_argument("--coastlines", action="store_true", help="add coastlines to the map")
+        #self.add_option_argument("--stock-image", action="store_true", help="add an underlay image to the map")
         self.add_option_argument("--cyclic-point", param_parse=True, help="add cyclic point in an array")
-        self.add_option_argument("--transform", param_parse=True, help="data transformation")
+        self.add_option_argument("--transform", param_parse=True, help="data coordinate system")
 
 
     def pre_perform(self, targs):
@@ -51,14 +56,30 @@ Examples
             targs.subplot = [opt]
 
         if targs.coastlines:
-            opt = pyloco.Option()
-            opt.context.append("coastlines")
+            targs.coastlines.context.append("coastlines")
 
             if hasattr(targs, "axes") and targs.axes:
-                targs.axes.append(opt)
+                targs.axes.append(targs.coastlines)
 
             else:
-                targs.axes = [opt]
+                targs.axes = [targs.coastlines]
+
+        if targs.stock_image:
+            targs.stock_image.context.append("stock_img")
+
+            if hasattr(targs, "axes") and targs.axes:
+                targs.axes.append(targs.stock_image)
+
+            else:
+                targs.axes = [targs.stock_image]
+
+        if targs.colorbar:
+            targs.colorbar.context.append("colorbar")
+            if hasattr(targs, "pyplot") and targs.pyplot:
+                targs.pyplot.append(targs.colorbar)
+
+            else:
+                targs.pyplot = [targs.colorbar]
 
         if targs.cyclic_point:
             
@@ -81,5 +102,19 @@ Examples
                 args.append("axis=" + axis)
                 exec("%s = cartopy.util.add_cyclic_point(%s)" % (data, ",".join(args)), self._env)
 
-#ax = plt.axes(projection=ccrs.PlateCarree())
-#ax.coastlines()
+        transform_name = None
+        transform_args = ""
+
+        if targs.transform:
+            transform_name = targs.transform.context[0]
+            targs.transform.context = []
+            transform_args = str(targs.transform)
+
+        if targs.plot:
+            for plot in targs.plot:
+                if transform_name is not None:
+                    plot.kwargs["transform"] = ("cartopy.crs.%s(%s)" %
+                        (transform_name, transform_args))
+
+                elif "transform" not in plot.kwargs:
+                    plot.kwargs["transform"] = "cartopy.crs.PlateCarree()"
