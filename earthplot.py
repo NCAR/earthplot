@@ -47,7 +47,8 @@ Examples
             proj = "cartopy.crs.%s()" % default_projection
 
 
-        if hasattr(targs, "subplot") and targs.subplot:
+        #if hasattr(targs, "subplot") and targs.subplot:
+        if targs.subplot:
             for subplot in targs.subplot:
                 subplot.kwargs["projection"] = proj
 
@@ -58,7 +59,8 @@ Examples
         if targs.coastlines:
             targs.coastlines.context.append("coastlines")
 
-            if hasattr(targs, "axes") and targs.axes:
+            #if hasattr(targs, "axes") and targs.axes:
+            if targs.axes:
                 targs.axes.append(targs.coastlines)
 
             else:
@@ -67,7 +69,8 @@ Examples
         if targs.stock_image:
             targs.stock_image.context.append("stock_img")
 
-            if hasattr(targs, "axes") and targs.axes:
+            #if hasattr(targs, "axes") and targs.axes:
+            if targs.axes:
                 targs.axes.append(targs.stock_image)
 
             else:
@@ -75,22 +78,19 @@ Examples
 
         if targs.colorbar:
             targs.colorbar.context.append("colorbar")
-            if hasattr(targs, "pyplot") and targs.pyplot:
+            #if hasattr(targs, "pyplot") and targs.pyplot:
+            if targs.pyplot:
                 targs.pyplot.append(targs.colorbar)
 
             else:
                 targs.pyplot = [targs.colorbar]
 
         if targs.cyclic_point:
-            
             args = []
-
             data = targs.cyclic_point.vargs[0] + "[:]"
             args.append(data)
-
             coord = targs.cyclic_point.kwargs.get("coord", None)
             axis = targs.cyclic_point.kwargs.get("axis", "-1")
-
 
             if coord:
                 coord += "[:]"

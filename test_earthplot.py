@@ -11,9 +11,10 @@ class EarthPlotTests(pyloco.TestCase):
             # AzimuthalEquidistant, AlbersEqualArea, EquidistantConic, LambertConformal
             # LambertCylindrical, Mercator, Miller, Mollweide, Orthographic, Robinson
             # Sinusoidal...
+            #"/home/youngsung/repos/github/nctools/tests/data/sresa1b_ncar_ccsm3-example.nc:/ua",
 
         argv = [
-            "/home/youngsung/repos/github/nctools/tests/data/sresa1b_ncar_ccsm3-example.nc:/ua",
+            "/home/youngsung/repos/github/nctools/tests/data/sresa1b_ncar_ccsm3-example.nc",
             "--coastlines", "color='grey'",
             "--title", "'%s (%s)' % (ua.original_name, ua.original_units)",
             "--stock-image",
