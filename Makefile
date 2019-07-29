@@ -72,6 +72,25 @@ multiproc:
 	--debug \
 	--backend WebAgg
 
+mprocdev:
+	nctools --multiproc 2 --clone 'var=("ua[0,0,:,:]", "ua[0,1,:,:]"),level=("0", "1")' \
+	--log proc.log \
+	-- earthplot.py \
+	/home/youngsung/repos/github/nctools/tests/data/sresa1b_ncar_ccsm3-example.nc \
+	--coastlines 'color="grey"' \
+	--stock-image \
+	-p 'lon[:], lat[:], _{var:clone}_@contourf@ax@myplot' \
+	--cyclic-point 'ua, coord=lon' \
+	--projection 'PlateCarree,central_longitude=180.0' \
+	--title '"%s (%s) level - %d" % (ua.original_name, ua.original_units, _{level:clone}_)' \
+	--colorbar '_plots_["myplot"]' \
+	-x '[-180, -120, -60, 0, 60, 120, 180], crs=cartopy.crs.PlateCarree()@ticks' \
+	-x 'lon.long_name@label' \
+	-y '[-78.5, -60, -25.5, 25.5, 60, 80], crs=cartopy.crs.PlateCarree()@ticks' \
+	-y 'lat.long_name@label' \
+	--debug \
+	--backend WebAgg
+
 quiver:
 	nctools earthplot.py \
 	/home/youngsung/cesm.nc \
