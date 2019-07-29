@@ -61,7 +61,7 @@ info:
 	#--title '"%s (%s) - level %d" % (ua.original_name, ua.original_units, _{level:clone}_)' \
 
 multiproc:
-	nctools --multiproc 2  --clone 'var=("ua[0,0,:,:]", "ua[0,1,:,:]"),level=("0", "1")' \
+	nctools --multiproc 2  --clone 'var=("ua[0,0,:,:]", "ua[0,1,:,:]", "ua[0,2,:,:]"),level=("0", "1", "2")' \
 	--log proc.log \
 	-- earthplot.py \
 	${TESTDATADIR}/sresa1b_ncar_ccsm3-example.nc \
@@ -81,7 +81,7 @@ multiproc:
 	#--backend WebAgg
 
 mprocdev:
-	nctools --multiproc 2 --clone 'var=("ua[0,0,:,:]", "ua[0,1,:,:]"),level=("0", "1")' \
+	nctools --multiproc 2 --clone 'var=("ua[0,0,:,:]", "ua[0,1,:,:]", "ua[0,2,:,:]"),level=("0", "1", "2")' \
 	--log proc.log \
 	-- earthplot.py \
 	${TESTDATADIR}/sresa1b_ncar_ccsm3-example.nc \
