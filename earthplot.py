@@ -13,7 +13,7 @@ Examples
 ---------
 """
     _name_ = "earthplot"
-    _version_ = "0.1.0"
+    _version_ = "0.1.1"
     _install_requires_ = ["ncplot", "cartopy"]
 
     def __init__(self, parent):
