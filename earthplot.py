@@ -26,8 +26,6 @@ Examples
         self.add_option_argument("--coastlines", nargs="?", param_parse=True, const="", help="add coastlines to the map")
         self.add_option_argument("--stock-image", nargs="?", param_parse=True, const="", help="add an underlay image to the map")
         self.add_option_argument("--colorbar", nargs="?", param_parse=True, const="", help="add a color bar to the map")
-        #self.add_option_argument("--coastlines", action="store_true", help="add coastlines to the map")
-        #self.add_option_argument("--stock-image", action="store_true", help="add an underlay image to the map")
         self.add_option_argument("--cyclic-point", param_parse=True, help="add cyclic point in an array")
         self.add_option_argument("--transform", param_parse=True, help="data coordinate system")
 
