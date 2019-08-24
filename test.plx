@@ -14,24 +14,39 @@ cfgs = {
 opensuse = os.path.isdir(cfgs["opensuse"]["testdatadir"] and cfgs["opensuse"]["datadir"])
 ubuntu = os.path.isdir(cfgs["ubuntu"]["testdatadir"] and cfgs["ubuntu"]["datadir"])
 
+imgfile = "test-opensuse.png"
+
+[setup*]
+if os.path.exists(imgfile):
+    os.remove(imgfile)
+
+
+[teardown*]
+if os.path.exists(imgfile):
+    os.remove(imgfile)
+
 [plot@opensuse]
 
 out@manager = earthplot.py \
     __{cfgs["opensuse"]["testdatadir"]}__/sresa1b_ncar_ccsm3-example.nc \
+    --import os \
     -p 'lon[:], lat[:], ua[0,0,:,:]@contourf' \
     --cyclic-point 'ua, coord=lon' \
     --projection 'PlateCarree,central_longitude=180.0' \
-    --noshow --save "'test-opensuse.png'" \
+    --assert-output "os.path.exists('__{imgfile}__')" \
+    --noshow --save "'__{imgfile}__'" \
     --backend WebAgg
 
 [plot@ubuntu]
 
 out@manager = earthplot.py \
     __{cfgs["opensuse"]["testdatadir"]}__/sresa1b_ncar_ccsm3-example.nc \
+    --import os \
     -p 'lon[:], lat[:], ua[0,0,:,:]@contourf' \
     --cyclic-point 'ua, coord=lon' \
     --projection 'PlateCarree,central_longitude=180.0' \
-    --noshow --save "'test-ubuntu.png'" \
+    --assert-output "os.path.exists('__{imgfile}__')" \
+    --noshow --save "'__{imgfile}__'" \
     --backend WebAgg
 
 #
