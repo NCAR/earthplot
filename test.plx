@@ -49,6 +49,19 @@ out@manager = earthplot.py \
     --noshow --save "'__{imgfile}__'" \
     --backend WebAgg
 
+[usstates@opensuse]
+
+out@manager = earthplot.py \
+    __{cfgs["opensuse"]["testdatadir"]}__/sresa1b_ncar_ccsm3-example.nc \
+    --import os \
+    -p 'lon[:], lat[:], ua[0,0,:,:]@contourf' \
+    --cyclic-point 'ua, coord=lon' \
+    --projection 'PlateCarree,central_longitude=180.0' \
+    --shape-earth "cartopy.crs.PlateCarree(), resolution='110m', category='cultural', name='admin_1_states_provinces_lakes_shp'" \
+    --assert-output "os.path.exists('__{imgfile}__')" \
+    --noshow --save "'__{imgfile}__'" \
+    --backend WebAgg
+
 #
 #coastlines:
 #	nctools earthplot.py \

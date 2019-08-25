@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pyloco
+import copy
 import cartopy
 import cartopy.util
 
@@ -13,7 +14,7 @@ Examples
 ---------
 """
     _name_ = "earthplot"
-    _version_ = "0.1.2"
+    _version_ = "0.1.3"
     _install_requires_ = ["ncplot", "cartopy"]
 
     def __init__(self, parent):
@@ -28,6 +29,7 @@ Examples
         self.add_option_argument("--colorbar", nargs="?", param_parse=True, const="", help="add a color bar to the map")
         self.add_option_argument("--cyclic-point", param_parse=True, help="add cyclic point in an array")
         self.add_option_argument("--transform", param_parse=True, help="data coordinate system")
+        self.add_option_argument("--shape-earth", param_parse=True, help="nature earth shapes")
 
 
     def pre_perform(self, targs):
@@ -99,6 +101,31 @@ Examples
             else:
                 args.append("axis=" + axis)
                 exec("%s = cartopy.util.add_cyclic_point(%s)" % (data, ",".join(args)), self._env)
+
+        if targs.shape_earth:
+            import cartopy.io.shapereader as shpreader
+            res = eval(targs.shape_earth.kwargs.pop("resolution", "'110m'"), self._env)
+            cat = eval(targs.shape_earth.kwargs.pop("category", "'cultural'"), self._env)
+            name = eval(targs.shape_earth.kwargs.pop("name", "'admin_1_states_provinces_lakes_shp'"), self._env)
+
+            shapes = shpreader.natural_earth(resolution=res, category=cat, name=name)
+
+            if len(targs.shape_earth.vargs) == 0:
+                targs.shape_earth.vargs.append(proj)
+
+            #for idx, shape in enumerate(shpreader.Reader(shapes).records()):
+            for idx, shape in enumerate(shpreader.Reader(shapes).geometries()):
+                newopt = copy.deepcopy(targs.shape_earth)
+                shape_varname = "_shape_earth_record_%d" % idx
+                self._env[shape_varname] = shape
+                newopt.vargs.insert(0, "[%s]" % shape_varname)
+                newopt.context.append("add_geometries")
+
+                if targs.axes:
+                    targs.axes.append(newopt)
+
+                else:
+                    targs.axes = [newopt]
 
         transform_name = None
         transform_args = ""
