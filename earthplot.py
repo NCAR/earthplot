@@ -14,7 +14,7 @@ Examples
 ---------
 """
     _name_ = "earthplot"
-    _version_ = "0.1.3"
+    _version_ = "0.1.4"
     _install_requires_ = ["ncplot", "cartopy"]
 
     def __init__(self, parent):
@@ -27,6 +27,7 @@ Examples
         self.add_option_argument("--coastlines", nargs="?", param_parse=True, const="", help="add coastlines to the map")
         self.add_option_argument("--stock-image", nargs="?", param_parse=True, const="", help="add an underlay image to the map")
         self.add_option_argument("--colorbar", nargs="?", param_parse=True, const="", help="add a color bar to the map")
+        self.add_option_argument("--colorbar-eval", nargs="?", param_parse=True, const="", help="add a color bar evaluation")
         self.add_option_argument("--cyclic-point", param_parse=True, help="add cyclic point in an array")
         self.add_option_argument("--transform", param_parse=True, help="data coordinate system")
         self.add_option_argument("--shape-earth", param_parse=True, help="nature earth shapes")
@@ -77,13 +78,30 @@ Examples
                 targs.axes = [targs.stock_image]
 
         if targs.colorbar:
-            targs.colorbar.context.append("colorbar")
+            targs.colorbar.context.insert(0, "colorbar")
             #if hasattr(targs, "pyplot") and targs.pyplot:
             if targs.pyplot:
                 targs.pyplot.append(targs.colorbar)
 
             else:
                 targs.pyplot = [targs.colorbar]
+
+        if targs.colorbar_eval:
+            ctx = targs.colorbar_eval.context.pop(0)
+            vargs = targs.colorbar_eval.vargs
+            kwargs = targs.colorbar_eval.kwargs
+
+            for idx in range(len(vargs)):
+                vargs[idx] = "_pyplots_['%s']." % ctx + vargs[idx]
+
+            for key in kwargs.keys():
+                kwargs[key] = "_pyplots_['%s']." % ctx + kwargs[key]
+
+            if targs.pyplot_eval:
+                targs.pyplot_eval.append(targs.colorbar_eval)
+
+            else:
+                targs.pyplot_eval = [targs.colorbar_eval]
 
         if targs.cyclic_point:
             args = []
