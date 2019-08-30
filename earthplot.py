@@ -14,8 +14,8 @@ Examples
 ---------
 """
     _name_ = "earthplot"
-    _version_ = "0.1.5"
-    _install_requires_ = ["ncplot", "cartopy"]
+    _version_ = "0.1.6"
+    _install_requires_ = ["nctools", "cartopy"]
 
     def __init__(self, parent):
 
